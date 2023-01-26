@@ -85,52 +85,14 @@ class Toaster {
 
         // 좌표 끝 ~ ------------------------------------------
 
-
-// 연기
-        // test
-        // this.context.beginPath();
-        // this.context.moveTo(0, 100);
-        // this.context.bezierCurveTo(100, 0, 200, 200, 300, 100);
-        // this.context.stroke();
-
-        this.context.strokeStyle = '#BFACB3';
-        this.context.fillStyle = "#BFACB3";
-        
-        this.context.beginPath();
-        this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
-        this.context.bezierCurveTo(this.x - (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x - (this.top_width/4) - 20 , this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
-        this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
-        this.context.bezierCurveTo(this.x - (this.top_width/4) + 20, this.y - this.height + 20, this.x - (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
-
-        // 반복되면 이런식으로,,,, x 좌표들만 (this.top_width/4) 차이로 바뀜  
-        this.context.moveTo(this.x, this.y - this.height);
-        this.context.bezierCurveTo(this.x - ( - this.smoke_curved), this.y - this.height + 20, this.x  - 20 , this.y - this.height + 40, this.x , this.y - this.height + 60);
-        this.context.moveTo(this.x, this.y - this.height);
-        this.context.bezierCurveTo(this.x  + 20, this.y - this.height + 20, this.x - ( + this.smoke_curved), this.y - this.height + 40, this.x , this.y - this.height + 60);
-
-        this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
-        this.context.bezierCurveTo(this.x + (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x + (this.top_width/4) - 20 , this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
-        this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
-        this.context.bezierCurveTo(this.x + (this.top_width/4) + 20, this.y - this.height + 20, this.x + (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
-        
-       
-        this.context.fill("evenodd"); // evenodd 랑 디폴트값이랑 차이점 ㅁ뭔지 좀 찾아보기 
-
-        this.context.stroke();
-
-
-
-
-    
-        // 다리 
-        // 왼쪽
         this.cornerRadius = 10; // 15
         this.context.lineJoin = "round";
         this.context.lineCap = "round";
         this.context.lineWidth = this.cornerRadius;  
         
-        
-     
+         
+        // 다리 
+        // 왼쪽
         this.context.strokeStyle = '#70878C'; // 선 색
         this.context.fillStyle = "#70878C";
         this.context.beginPath();
@@ -152,21 +114,6 @@ class Toaster {
         this.context.quadraticCurveTo(this.x + this.top_width/2, this.y + this.height/2, this.x + this.top_width/2 - 50,this.y + this.height/3);
 
         this.context.fill();
-        this.context.stroke();
-
-
-        // 손잡이
-        this.context.lineJoin = "round";
-        this.context.lineCap = "round";
-        this.context.lineWidth = this.cornerRadius;  
-        
-        
-        this.context.strokeStyle = '#735A45'; 
-        this.context.fillStyle = "#735A45";
-        this.context.beginPath();
-        this.context.strokeRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4), 25-this.cornerRadius, 25-this.cornerRadius);
-        this.context.fillRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4),25-this.cornerRadius,25-this.cornerRadius);
-
         this.context.stroke();
         
         
@@ -296,17 +243,69 @@ class Toaster {
 
 }
 
+//다리
+class Legs {
+    // constructor(x, y, context) {
+    //     this.x = x;
+    //     this.y = y;
+    //     this.ctx = context;
+        
+    // }
+}
 
 
 //연기
 class Smoke {
 
     constructor(x, y, context) {
+        this.x = x;
+        this.y = y;
+        this.context = context;
         
+        this.smoke_curved = 50; 
+
+        this.smokePosition;
+
+        this.height = TOASTER_HEIGHT;
+        this.top_width = this.height;
+        
+        
+        
+
     }
 
     render() {
+        // 연기
+        // test
+        // this.context.beginPath();
+        // this.context.moveTo(0, 100);
+        // this.context.bezierCurveTo(100, 0, 200, 200, 300, 100);
+        // this.context.stroke();
+
+        this.context.strokeStyle = '#BFACB3';
+        this.context.fillStyle = "#BFACB3";
         
+        this.context.beginPath();
+        this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
+        this.context.bezierCurveTo(this.x - (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x - (this.top_width/4) - 20 , this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
+        this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
+        this.context.bezierCurveTo(this.x - (this.top_width/4) + 20, this.y - this.height + 20, this.x - (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
+
+        // 반복되면 이런식으로,,,, x 좌표들만 (this.top_width/4) 차이로 바뀜  
+        this.context.moveTo(this.x, this.y - this.height);
+        this.context.bezierCurveTo(this.x - ( - this.smoke_curved), this.y - this.height + 20, this.x  - 20 , this.y - this.height + 40, this.x , this.y - this.height + 60);
+        this.context.moveTo(this.x, this.y - this.height);
+        this.context.bezierCurveTo(this.x  + 20, this.y - this.height + 20, this.x - ( + this.smoke_curved), this.y - this.height + 40, this.x , this.y - this.height + 60);
+
+        this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
+        this.context.bezierCurveTo(this.x + (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x + (this.top_width/4) - 20 , this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
+        this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
+        this.context.bezierCurveTo(this.x + (this.top_width/4) + 20, this.y - this.height + 20, this.x + (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
+        
+       
+        this.context.fill("evenodd"); // evenodd 랑 디폴트값이랑 차이점 ㅁ뭔지 좀 찾아보기 
+
+        this.context.stroke();
     }
 
 }
@@ -314,11 +313,34 @@ class Smoke {
 // 손잡이
 class Lever {
     constructor(x, y, context) {
+        this.x = x;
+        this.y = y;
+        this.context = context;
         
+        this.cornerRadius = 15; // 15
+
+        this.height = TOASTER_HEIGHT;
+        this.top_width = this.height;
+        
+        
+        
+
     }
 
     render() {
+         // 손잡이
+         this.context.lineJoin = "round";
+         this.context.lineCap = "round";
+         this.context.lineWidth = this.cornerRadius;  
          
+         
+         this.context.strokeStyle = '#735A45'; 
+         this.context.fillStyle = "#735A45";
+         this.context.beginPath();
+         this.context.strokeRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4), 25-this.cornerRadius, 25-this.cornerRadius);
+         this.context.fillRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4),25-this.cornerRadius,25-this.cornerRadius);
+
+         this.context.stroke();
 
 
         
