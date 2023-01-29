@@ -59,6 +59,9 @@ class Toaster {
         this.smoke_curved = 50;
         
         //레버
+        this.lever;
+        this.lever_size = 25;
+        this.lever_cornerRadius = 15; // lever_size > lever_cornerRadius 
 
 
         this.context.lineJoin = "round";
@@ -78,7 +81,7 @@ class Toaster {
         this.smoke.push(new Smoke(this.x + (TOASTER_WIDTH/4), this.y - TOASTER_HEIGHT, this.smoke_curved));
 
         // 레버
-
+        this.lever = new Lever(this.x + (TOASTER_WIDTH/2 + WIDTH_DIFF), this.y + (TOASTER_HEIGHT/4), this.lever_size, this.lever_cornerRadius);
 
 
     }
@@ -121,6 +124,9 @@ class Toaster {
             this.leg[i].render(this.context);
         }
 
+        // 손잡이
+        this.lever.render(this.context);
+
         
         
         // 몸통 
@@ -148,45 +154,13 @@ class Toaster {
 
 
 
-        // 디자인? 
-        
-        // this.context.strokeStyle = '#A3C5CC'; //#D6CB56 : 노란색~! 포인트줄 때 사용해도 될듯 ㅎㅎ 
-        // this.context.beginPath();
-        
-  
-        // this.context.fillStyle = "#A3C5CC";
-        // this.context.strokeRect(this.x - this.top_width/2, this.y - (this.height/2),this.top_width,this.height);
-        // this.context.fillRect(this.x - this.top_width/2, this.y - (this.height/2),this.top_width,this.height);     
-        
+        // 디자인?  #D6CB56 : 노란색~! // 좀 더 쨍한 노란색 #F0E460
         this.context.strokeStyle = '#A3C5CC'; //#D6CB56 : 노란색~! 포인트줄 때 사용해도 될듯 ㅎㅎ 
         this.context.beginPath();
-        
-  
         this.context.fillStyle = "#A3C5CC";
         this.context.strokeRect(this.x - this.top_width/2, this.y - (this.height/4), this.top_width, this.height/2);
         this.context.fillRect(this.x - this.top_width/2, this.y - (this.height/4), this.top_width, this.height/2); 
-        
-
         this.context.stroke();
-
-        
-        // 온도조절 버튼 같은거? 만드려고 했는데,,,  
-        // this.cornerRadius = 5; // 15
-
-        // this.context.lineJoin = "round";
-        // this.context.lineCap = "round";
-        // this.context.lineWidth = this.cornerRadius; 
-
-
-        // this.context.strokeStyle = '#F0E460'; //#D6CB56 : 노란색~! 포인트줄 때 사용해도 될듯 ㅎㅎ 
-        // this.context.fillStyle = "#D6CB56";
-        // this.context.beginPath();
-        // // this.context.moveTo(this.x - (this.top_width/4), this.y - (this.height/4));
-        // // this.context.lineTo(this.x + (this.top_width/4), this.y - (this.height/4));
-        // this.context.arc(this.x, this.y, 30, 0, TWO_PI); // Outer circle
-        // this.context.fill();
-       
-        // this.context.stroke();
 
 
         // 광...?
@@ -251,20 +225,6 @@ class Toaster {
 
 //다리
 class Legs {
-    // constructor(x, y, direction,context) {
-    //     this.x = x;
-    //     this.y = y;
-    //     this.direction = direction;
-    //     this.ctx = context;
-
-    //     this.legSize = 25;
-    //     this.legStartX = this.x + this.direction * (TOASTER_WIDTH + WIDTH_DIFF)/2;
-    //     this.legEndX = this.direction * (TOASTER_WIDTH/2 + this.legSize);
-    //     this.legCurvedX = this.x + (this.direction*TOASTER_WIDTH/2);
-    //     this.legY = this.y + TOASTER_HEIGHT/2;
-
-    // }
-
     constructor(x, y, direction) {
         this.x = x;
         this.y = y;
@@ -275,12 +235,9 @@ class Legs {
         this.legEndX = this.x + this.direction * (TOASTER_WIDTH/2 + this.legSize);
         this.legCurvedX = this.x + (this.direction * TOASTER_WIDTH/2);
         this.legY = this.y + TOASTER_HEIGHT/2;
-
     }
 
     render(context) {
-        // 다리 테스트
-
         context.lineWidth = 10; 
 
         context.strokeStyle = '#70878C'; // 선 색
@@ -315,50 +272,15 @@ class Legs {
 
 //연기
 class Smoke {
-
     // constructor(x, y, context) {
     constructor(x, y, smoke_curved) {
         this.x = x; // this.x - (this.top_width/4)
-        this.y = y; // this.y - this.height
-        // this.context = context;
-        
+        this.y = y; // this.y - this.height      
         this.smoke_curved = smoke_curved; 
-
-        // this.smokePosition;
-
-        // this.height = TOASTER_HEIGHT;
-        // this.top_width = this.height;
-
     }
 
     render(context) {
         // 연기
-        // test
-        // this.context.beginPath();
-        // this.context.moveTo(0, 100);
-        // this.context.bezierCurveTo(100, 0, 200, 200, 300, 100);
-        // this.context.stroke();
-
-        
-        
-        // this.context.beginPath();
-        // this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
-        // this.context.bezierCurveTo(this.x - (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x - (this.top_width/4) - 20 , this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
-        // this.context.moveTo(this.x - (this.top_width/4), this.y - this.height);
-        // this.context.bezierCurveTo(this.x - (this.top_width/4) + 20, this.y - this.height + 20, this.x - (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x - (this.top_width/4), this.y - this.height + 60);
-
-        // // 반복되면 이런식으로,,,, x 좌표들만 (this.top_width/4) 차이로 바뀜  
-        // this.context.moveTo(this.x, this.y - this.height);
-        // this.context.bezierCurveTo(this.x + (this.smoke_curved), this.y - this.height + 20, this.x  - 20 , this.y - this.height + 40, this.x , this.y - this.height + 60);
-        // this.context.moveTo(this.x, this.y - this.height);
-        // this.context.bezierCurveTo(this.x  + 20, this.y - this.height + 20, this.x - ( + this.smoke_curved), this.y - this.height + 40, this.x , this.y - this.height + 60);
-
-        // this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
-        // this.context.bezierCurveTo(this.x + (this.top_width/4) + this.smoke_curved, this.y - this.height + 20, this.x + (this.top_width/4) - 20 , this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
-        // this.context.moveTo(this.x + (this.top_width/4), this.y - this.height);
-        // this.context.bezierCurveTo(this.x + (this.top_width/4) + 20, this.y - this.height + 20, this.x + (this.top_width/4) - this.smoke_curved, this.y - this.height + 40, this.x + (this.top_width/4), this.y - this.height + 60);
-   
-
         context.strokeStyle = '#BFACB3';
         context.fillStyle = "#BFACB3";
         
@@ -375,38 +297,26 @@ class Smoke {
 
 // 손잡이
 class Lever {
-    constructor(x, y, context) {
+    constructor(x, y, lever_size, lever_cornerRadius) {
         this.x = x;
         this.y = y;
-        this.context = context;
-        
-        this.cornerRadius = 15; // 15
-
-        this.height = TOASTER_HEIGHT;
-        this.top_width = this.height;
-        
-        
-        
-
+        this.cornerRadius = lever_cornerRadius;
+        this.lever_size = lever_size - lever_cornerRadius;
     }
 
-    render() {
+    render(context) {
          // 손잡이
-         this.context.lineJoin = "round";
-         this.context.lineCap = "round";
-         this.context.lineWidth = this.cornerRadius;  
-         
-         
-         this.context.strokeStyle = '#735A45'; 
-         this.context.fillStyle = "#735A45";
-         this.context.beginPath();
-         this.context.strokeRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4), 25-this.cornerRadius, 25-this.cornerRadius);
-         this.context.fillRect(this.x + (this.top_width/2 + this.width_diff)+5, this.y + (this.height/4),25-this.cornerRadius,25-this.cornerRadius);
+        //  context.lineJoin = "round";
+        //  context.lineCap = "round";
+         context.lineWidth = this.cornerRadius;  
+         context.strokeStyle = '#735A45'; 
+         context.fillStyle = "#735A45";
+         context.beginPath();
 
-         this.context.stroke();
-
-
-        
+         // 조금 더 튀어나오게(?) 하고 싶으면 this.x + 5 정도 해주면 되긴 하는데, 너무 하드코딩아닌가,,, 근데 사실 다 하드코딩이긴함 ㅎ;; 
+         context.strokeRect(this.x, this.y, this.lever_size, this.lever_size);
+         context.fillRect(this.x, this.y, this.lever_size, this.lever_size);
+         context.stroke();
     }
 
 }
@@ -415,13 +325,8 @@ class Lever {
 window.onload = function () {
     const app_toaster = new App_Toaster();
 
-    // app_t.render();
-
-    // console.log("toast start : " + app_toaster.m_height + " / " + app_toaster.m_width);
-
     app_toaster.initToast();
 
     app_toaster.render();
-    
 
 }
