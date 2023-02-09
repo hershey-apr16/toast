@@ -8,19 +8,24 @@ const COL_TOASTER = "#a0dae9";
 
 
 class App_Toaster {
-
     constructor() {
+        console.log("Toaster!");
 
         this.canvas = document.getElementById("toast_machine");
-        this.context = this.canvas.getContext("2d");
+        this.context = this.canvas.getContext("2d", {willReadFrequently : true});
         this.width = this.canvas.width = window.innerWidth;
         this.height = this.canvas.height = window.innerHeight;
+
+        
+
 
         this.x = window.innerWidth/2; // 중앙 좌표
         this.y = window.innerHeight/2;
 
         this.toaster;
         this.table;
+
+        
     }
 
     initToast() {
@@ -33,6 +38,37 @@ class App_Toaster {
         this.toaster = init; 
 
         this.toaster.initialize();
+
+
+        // 테스트 : 캔버스 클릭 : 색깔로 구분 , getImageData는 render가 된 다음에 사용 가능~! 
+        // this.canvas로 하면 안먹는다. (---> typeError)
+        // 근데 var 를 사용하면 또 된다... 왜지??? 
+        // var canvas = document.getElementById("toast_machine");
+        var context = this.canvas.getContext("2d");
+        var jam_test = this.jam;
+        this.canvas.onclick = function(event) {
+            // var mouseX = event.clientX - event.offsetX;
+            // var mouseY = event.clientY - event.offsetY;
+
+            // console.log(context);
+            var test = context.getImageData(event.offsetX,event.offsetY,1,1);
+
+
+            
+            console.log(test.data[0] + ", " + test.data[1] + ", " + test.data[2]);
+
+            var test_color = test.data[0] + "" + test.data[1] + "" + test.data[2];
+            // console.log(test_color);
+            // console.log("mouseX : " + mouseX + ", mouseY : " + mouseY );
+            //this.x - TOASTER_WIDTH/2, this.y - TOASTER_HEIGHT/2 + this.bounceDist/3
+            if(test_color == 120179135) {
+                console.log("lever");
+                
+                jam_test.test("hello");
+            }
+        
+        }
+        
     }
 
     update() {
@@ -56,10 +92,23 @@ class App_Toaster {
     }
 
     loop() {
+
+
+
+        
         this.update();
+
+
+
+        
         this.render();
 
+        
+
+
         window.requestAnimationFrame(() => this.loop());
+
+
     }
 
 
@@ -196,6 +245,10 @@ class Jam {
         }
     }
 
+    test(x) {
+        alert("jam! " + x);
+    }
+
 
 }
 
@@ -266,11 +319,7 @@ class Toaster {
     }
 
     update() {
-
-        
-
         this.bounceDist -= this.vellocity; 
-        // this.smoke_curved += (-this.vellocity/2);
         this.smoke_size += (-this.vellocity/2);
         this.vellocity += this.accel;
 
@@ -547,5 +596,19 @@ window.onload = function () {
 
     // app_toaster.render();
     
+
+
+
+  
+
+
+
     app_toaster.loop();
+
+
+
+
+
+    
+
 }
