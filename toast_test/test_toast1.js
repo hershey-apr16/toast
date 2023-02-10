@@ -9,15 +9,12 @@ const COL_TOASTER = "#a0dae9";
 
 class App_Toaster {
     constructor() {
-        console.log("Toaster!");
+        console.log("Toaster! : " + this);
 
         this.canvas = document.getElementById("toast_machine");
         this.context = this.canvas.getContext("2d", {willReadFrequently : true});
         this.width = this.canvas.width = window.innerWidth;
         this.height = this.canvas.height = window.innerHeight;
-
-        
-
 
         this.x = window.innerWidth/2; // 중앙 좌표
         this.y = window.innerHeight/2;
@@ -25,19 +22,27 @@ class App_Toaster {
         this.toaster;
         this.table;
 
+        this.onoff = false;
         
     }
 
     initToast() {
-        let init = new Toaster(this.x, this.y, this.context);
-       
+
+        var toaster = new Toaster(this.x, this.y, this.context);
+
         this.table = new Table(this.x, this.y, this.context);
 
         this.jam = new Jam(this.x, this.y);
 
-        this.toaster = init; 
+        var lever = new Lever(this.x, this.y);
+
+        this.lever = lever;
+
+        this.toaster = toaster;
 
         this.toaster.initialize();
+
+        console.log("???");
 
 
         // 테스트 : 캔버스 클릭 : 색깔로 구분 , getImageData는 render가 된 다음에 사용 가능~! 
@@ -45,27 +50,34 @@ class App_Toaster {
         // 근데 var 를 사용하면 또 된다... 왜지??? 
         // var canvas = document.getElementById("toast_machine");
         var context = this.canvas.getContext("2d");
-        var jam_test = this.jam;
-        this.canvas.onclick = function(event) {
+
+        var self = this; // app_toast 객체 가져가려고 이렇게 했음 ㅠㅠ 
+
+        console.log("whoamI : " + self);
+
+            this.canvas.onclick = function(event) {
             // var mouseX = event.clientX - event.offsetX;
             // var mouseY = event.clientY - event.offsetY;
 
             // console.log(context);
             var test = context.getImageData(event.offsetX,event.offsetY,1,1);
 
-
-            
             console.log(test.data[0] + ", " + test.data[1] + ", " + test.data[2]);
 
             var test_color = test.data[0] + "" + test.data[1] + "" + test.data[2];
             // console.log(test_color);
             // console.log("mouseX : " + mouseX + ", mouseY : " + mouseY );
             //this.x - TOASTER_WIDTH/2, this.y - TOASTER_HEIGHT/2 + this.bounceDist/3
-            if(test_color == 120179135) {
-                console.log("lever");
-                
-                jam_test.test("hello");
-            }
+                if(test_color == 120179135) {
+                    // console.log("onoff before : " + this.onoff);
+                    console.log("if : " + this);
+                    console.log("** if : " + self);
+
+                    self.onoff = true;
+                    // lever.test_clickUpdate(true);
+                }
+
+                // console.log("onoff after : " + this.onoff);
         
         }
         
@@ -73,7 +85,11 @@ class App_Toaster {
 
     update() {
         this.toaster.update();
+
         this.jam.update();
+
+        this.onoff = this.lever.test_clickUpdate(this.onoff);
+
     }
 
     render() {
@@ -85,6 +101,7 @@ class App_Toaster {
         
         this.toaster.render(this.context);
 
+        this.lever.render(this.context);
 
         this.jam.render(this.context);
         
@@ -92,15 +109,9 @@ class App_Toaster {
     }
 
     loop() {
-
-
-
         
-        this.update();
 
-
-
-        
+        this.update();        
         this.render();
 
         
@@ -164,9 +175,6 @@ class Table { // 그냥 그림으로 넣을지 고민중,,
         
     }
 
-    update() {
-
-    }
 
 }
 
@@ -179,7 +187,11 @@ class Jam {
         // 애니메이션 
         this.bounceDist = 10;
         this.vellocity = 1;
-        this.accel = 0.05;
+        this.accel = 0.15;
+
+
+        // 테스트, 뚜겅 색 바꾸기 
+        this.test_col = 96;
     }
 
     render(context) {
@@ -218,6 +230,9 @@ class Jam {
         context.beginPath();
         context.strokeStyle = "#ff7360";
         context.fillStyle = "#ff7360";
+        
+        // context.strokeStyle = "rgb( 255, 115, "+ this.test_col + ")";
+        // context.fillStyle = "rgb( 255, 115, " + this.test_col + ")";
         context.ellipse(this.x - TOASTER_WIDTH*1.8 + WIDTH_DIFF, this.y + TOASTER_HEIGHT*1.2 + this.bounceDist/4, 36 ,16 , 0, 0, TWO_PI);
 
         context.moveTo(this.x - TOASTER_WIDTH*1.8 + WIDTH_DIFF + 25, this.y + TOASTER_HEIGHT*1.2 + 10 );
@@ -230,24 +245,33 @@ class Jam {
 
         context.fill();
         context.stroke();
+
+
     }
 
     update() {
-        this.bounceDist -= this.vellocity; 
-        this.vellocity += this.accel;
+        // console.log("bounceDist : " + this.bounceDist + " / " + -this.y/10);
+        
+        this.bounceDist += this.vellocity; 
+        this.vellocity -= this.accel;
 
-        if(this.bounceDist < -this.y/10) {
-            this.vellocity -= this.accel;
-            this.vellocity *= -1;
-        } else if(this.bounceDist > this.y/8) {
-            this.vellocity -= this.accel;
-            this.vellocity *= -1;
-        }
+        // console.log("vellocity : " + this.vellocity)
+
+        if(this.bounceDist < -this.y/10 || this.bounceDist >= this.y/8) { 
+            this.vellocity += this.accel;
+            this.vellocity *= -1; // 방향 바꿔주기...
+            console.log("@@@ : " + this.vellocity);        
+        } 
+        // else if(this.bounceDist > this.y/8) { // 내려갈 때
+            
+        //     this.vellocity -= this.accel;
+        //     this.vellocity *= -1;
+
+        //     console.log("!!! else : " + this.vellocity);
+        // }
     }
 
-    test(x) {
-        alert("jam! " + x);
-    }
+
 
 
 }
@@ -278,12 +302,6 @@ class Toaster {
         this.ovals = [];
         this.oval_size = 7;
 
-        
-        //레버
-        this.lever;
-        this.lever_size = 25;
-        this.lever_cornerRadius = 15; // lever_size > lever_cornerRadius 
-
 
         // 애니메이션 
         this.bounceDist = 10;
@@ -313,7 +331,7 @@ class Toaster {
         this.ovals.push(new Oval(this.x + 2*TOASTER_WIDTH/5, this.y + TOASTER_HEIGHT/2, this.oval_size));
 
         // 레버
-        this.lever = new Lever(this.x + (TOASTER_WIDTH/2 + WIDTH_DIFF), this.y + (TOASTER_HEIGHT/4), this.lever_size, this.lever_cornerRadius);
+        // this.lever = new Lever(this.x + (TOASTER_WIDTH/2 + WIDTH_DIFF), this.y + (TOASTER_HEIGHT/4), this.lever_size, this.lever_cornerRadius);
 
 
     }
@@ -371,7 +389,7 @@ class Toaster {
         }
 
         // 손잡이
-        this.lever.render(this.context);
+        // this.lever.render(this.context);
 
         // 몸통 
         this.cornerRadius = 20; // 15
@@ -404,6 +422,8 @@ class Toaster {
         }
 
     }
+
+    
 
 
 }
@@ -558,11 +578,21 @@ class Oval {
 
 // 손잡이
 class Lever {
-    constructor(x, y, lever_size, lever_cornerRadius) {
-        this.x = x;
-        this.y = y;
-        this.cornerRadius = lever_cornerRadius;
-        this.lever_size = lever_size - lever_cornerRadius;
+    constructor(x, y) {
+
+
+        this.x = x + (TOASTER_WIDTH/2 + WIDTH_DIFF);
+        this.y = y  + TOASTER_HEIGHT/2 + (TOASTER_HEIGHT/4);
+        // this.cornerRadius = lever_cornerRadius;
+        // this.lever_size = lever_size - lever_cornerRadius;
+
+        this.cornerRadius = 15;
+        this.lever_size = 25 - this.cornerRadius;
+
+
+        this.test_bounceDist = 0;
+        this.vellocity = 1;
+        this.accel = 0.05;
     }
 
     render(context) {
@@ -570,8 +600,12 @@ class Lever {
         context.lineWidth = this.cornerRadius + 10;  
         context.strokeStyle = "#fff"; 
         context.beginPath();
-        context.strokeRect(this.x + 5, this.y, this.lever_size, this.lever_size);
+        context.strokeRect(this.x + 5, this.y+ this.test_bounceDist, this.lever_size, this.lever_size);
         context.stroke();
+
+
+        
+        
 
         // 손잡이
         //  context.lineJoin = "round";
@@ -581,9 +615,46 @@ class Lever {
         context.fillStyle = "#78B387"; 
         context.beginPath();
         // 조금 더 튀어나오게(?) 하고 싶으면 this.x + 5 정도 해주면 되긴 하는데, 너무 하드코딩아닌가,,, 근데 사실 다 하드코딩이긴함 ㅎ;; 
-        context.strokeRect(this.x + 5, this.y, this.lever_size, this.lever_size);
-        context.fillRect(this.x + 5, this.y, this.lever_size, this.lever_size);
+        context.strokeRect(this.x + 5, this.y + this.test_bounceDist, this.lever_size, this.lever_size);
+        context.fillRect(this.x + 5, this.y + this.test_bounceDist, this.lever_size, this.lever_size);
         context.stroke();
+
+        context.lineWidth = 8;
+        context.beginPath();
+        context.moveTo(this.x - this.lever_size*3, this.y + this.lever_size/2 + this.test_bounceDist);
+        context.lineTo(this.x + 5, this.y + this.lever_size/2 + this.test_bounceDist);
+        context.stroke();
+    }
+
+    // 테스트 
+    test_clickUpdate(x) {
+
+        console.log("!!!! " + x);
+
+        if(x == false) {
+            this.test_bounceDist = 0;
+            return false;
+        } else {
+            console.log("before : " + this.test_bounceDist );
+            this.test_bounceDist += this.vellocity; 
+            this.vellocity -= this.accel;
+            // console.log("after : " + this.test_bounceDist); 
+
+            console.log(this.vellocity);
+
+            if(this.test_bounceDist < -TOASTER_HEIGHT*0.7) {
+                // this.vellocity += this.accel;
+                // this.vellocity *= -1;
+               
+                this.vellocity = 0.5;
+
+                alert("hello");
+
+                return false;
+            }             
+        }
+
+        
     }
 
 }
@@ -596,19 +667,6 @@ window.onload = function () {
 
     // app_toaster.render();
     
-
-
-
-  
-
-
-
     app_toaster.loop();
-
-
-
-
-
-    
 
 }
